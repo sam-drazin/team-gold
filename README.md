@@ -8,6 +8,21 @@ Students will build a tool for stock analysis and selection using publicly avail
 **Setting up AWS RDS**
 (getting an aws account, getting RDS, setting up free RDS for MySQL)
 
-**(Optional) Setting up MySQL Workbenc**h
+**(Optional) Setting up MySQL Workbench**
 
+**Choose Funds that you want to pull data from**
+(get their CIKs for EDGAR)
+
+#Data Pulling and Cleaning
+(Discuss the plan and what data you need to implement this plan)
 **Pulling Fund Data from EDGAR**
+(using api-sec.io for api key)
+
+**Using SQL and Python to clean data**
+(include sql statement to get top 25 of each fund from this past quarter)
+(include sql statement to export as JSON file)
+(include python script that ranked the different stocks)
+
+(Discuss where we are at this point - this is where we transition from current and past information to future predictions)
+#Modeling for the future
+****
