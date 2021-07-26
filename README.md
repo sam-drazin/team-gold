@@ -13,7 +13,7 @@ Students will build a tool for stock analysis and selection using publicly avail
 **Choose Funds that you want to pull data from**
 (get their CIKs for EDGAR)
 
-#Data Pulling and Cleaning
+# Data Pulling and Cleaning
 (Discuss the plan and what data you need to implement this plan)
 **Pulling Fund Data from EDGAR**
 (using api-sec.io for api key)
@@ -24,5 +24,5 @@ Students will build a tool for stock analysis and selection using publicly avail
 (include python script that ranked the different stocks)
 
 (Discuss where we are at this point - this is where we transition from current and past information to future predictions)
-#Modeling for the future
+# Modeling for the future
 ****
