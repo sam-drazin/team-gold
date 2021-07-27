@@ -5,6 +5,8 @@ Students will build a tool for stock analysis and selection using publicly avail
 **Clone Repo**
   (instructions to clone repo into your own directory)
 
+**Required Python Libraries to install**
+
 **Setting up AWS RDS**
 (getting an aws account, getting RDS, setting up free RDS for MySQL)
 
