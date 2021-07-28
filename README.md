@@ -7,7 +7,8 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
 # Prerequisites 
 **Clone Repo**
     -Open the command line interface on your local machine
-    -Clone the repo with the command: git clone https://github.com/davidlifschitz/team-gold.git
+    -Clone the repo with the command: <br />
+    git clone https://github.com/davidlifschitz/team-gold.git
 
 **Required Python Libraries to install**<br />
     -All code must be run using python3<br />
