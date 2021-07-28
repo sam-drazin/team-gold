@@ -21,6 +21,8 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
         -  keras - ```pip install keras```<br />
         -  sec-api - ```pip install sec-api```<br />
         -  pymysql - ```pip install pymysql```<br />
+Or to install all of them at once:
+```pip install pandas pandas_datareader numpy tensorflow sklearn keras sec-api pymysql```
 
 
 **Setting up Amazon Web Services RDS**<br />
