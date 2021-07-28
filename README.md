@@ -9,7 +9,7 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
     -Open the command line interface on your local machine
     -Clone the repo with the command: git clone https://github.com/davidlifschitz/team-gold.git
 
-**Required Python Libraries to install**
+**Required Python Libraries to install**<br />
     -All code must be run using python3<br />
     -Install the following python libraries on your machine with the following commands:<br />
         -pandas - pip install pandas<br />
@@ -22,7 +22,7 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
         -pymysql - pip install pymysql<br />
 
 
-**Setting up Amazon Web Services RDS**
+**Setting up Amazon Web Services RDS**<br />
     -Creating an Amazon RDS database (if you do not already have a database created)<br />
         1. From the AWS Management console open EC2<br />
         2. Click the orange "Create security group" button.<br />
@@ -51,12 +51,12 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
         20. Once the database is created (it will take a few minutes), find the "Endpoint" and "Port" (the port should be 3306).<br />
             -Save these as well.<br />
 
-**Create an SEC-API Account**
+**Create an SEC-API Account**<br />
     -Go to https://sec-api.io/<br />
     -Click "Get Free API Key" and create an account.<br />
     -Save your API key.<br />
 
-**(Optional) Setting up MySQL Workbench**
+**(Optional) Setting up MySQL Workbench**<br />
     -Download MySQL Workbench from https://dev.mysql.com/downloads/workbench/<br />
     -Click the "+" to add a new connection.<br />
     -Create a "Connection Name".<br />
