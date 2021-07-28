@@ -21,6 +21,7 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
         -sec-api - pip install sec-api<br />
         -pymysql - pip install pymysql<br />
 
+
 **Setting up Amazon Web Services RDS**
     -Creating an Amazon RDS database (if you do not already have a database created)<br />
         1. From the AWS Management console open EC2<br />
