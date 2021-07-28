@@ -6,21 +6,21 @@ SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The d
 
 # Prerequisites 
 **Clone Repo**
-    -Open the command line interface on your local machine
-    -Clone the repo with the command: <br />
-    git clone https://github.com/davidlifschitz/team-gold.git
+    - Open the command line interface on your local machine
+    - Clone the repo with the command: <br />
+    ```git clone https://github.com/davidlifschitz/team-gold.git```
 
 **Required Python Libraries to install**<br />
     -All code must be run using python3<br />
     -Install the following python libraries on your machine with the following commands:<br />
-        -pandas - pip install pandas<br />
-        -pandas_datareader - pip install pandas_datareader<br />
-        -numpy - pip install numpy<br />
-        -tensorflow - pip install tensorflow<br />
-        -sklearn - pip install sklearn<br />
-        -keras - pip install keras<br />
-        -sec-api - pip install sec-api<br />
-        -pymysql - pip install pymysql<br />
+        -  pandas - ```pip install pandas```<br />
+        -  pandas_datareader - ```pip install pandas_datareader```<br />
+        -  numpy - ```pip install numpy```<br />
+        -  tensorflow - ```pip install tensorflow```<br />
+        -  sklearn - ```pip install sklearn```<br />
+        -  keras - ```pip install keras```<br />
+        -  sec-api - ```pip install sec-api```<br />
+        -  pymysql - ```pip install pymysql```<br />
 
 
 **Setting up Amazon Web Services RDS**<br />
