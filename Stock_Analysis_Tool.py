@@ -7,7 +7,8 @@
 #
 #
 from sec_api import QueryApi
-import pymysql,json,os
+import simplejson as json
+import pymysql,os,requests,operator
 
 
 
@@ -20,17 +21,48 @@ db = pymysql.connect(
 c = db.cursor()
 
 
-queryApi = QueryApi(api_key="08326206184745c3bfd692d2ab3c92721a7329ba0445e95b59a0979296dd1a3f") #Your API Key that can be obtained from the sec-api site
+# queryApi = QueryApi(api_key="2cbca106dd8006615cc5360d3752653aca521d4ba07b3f4b3316961b93eab3d2") #Your API Key that can be obtained from the sec-api site
 
 all_filings = []
 
-citadel = [ {"Fund" : "Citadel", "cik" : "1423053"},
+fund_to_cik = [ 
+    {"Fund" : "Citadel", "cik" : "1423053"},
     {"Fund" : "ExodusPoint", "cik" : "1736225"},
     {"Fund" : "Millburn RidgeField", "cik" : "1294571"},
     {"Fund" : "Point72", "cik" : "1603466"},
     {"Fund" : "Light Street", "cik" : "1569049"},
-    "1439289",]
+    {"Fund" : "Toscafund", "cik" : "1439289"},
+    {"Fund" : "Valinor", "cik" : "1401388"},
+    {"Fund" : "Matrix Capital Co.", "cik" : "1410830"},
+    {"Fund" : "Discovery Capital", "cik" : "1389507"},
+    {"Fund" : "Healthcor", "cik" : "1343781"},
+    {"Fund" : "Bridgewater", "cik" : "1350694"},
+    {"Fund" : "Impala", "cik" : "1317679"},
+    {"Fund" : "Marshall Wace", "cik" : "1318757"},
+    {"Fund" : "Lone Pine", "cik" : "1061165"},
+    {"Fund" : "Intrepid Capital", "cik" : "1092838"},
+    {"Fund" : "Sun Valley Gold", "cik" : "1280493"},
+    {"Fund" : "Millennium", "cik" : "1273087"},
+    {"Fund" : "Balyasny", "cik" : "1218710"},
+    {"Fund" : "Bridger", "cik" : "1166309"},
+    {"Fund" : "Tiger Global", "cik" : "1167483"},
+    {"Fund" : "Second Curve", "cik" : "1136704"},
+    {"Fund" : "Coatue", "cik" : "1135730"},
+    {"Fund" : "Joho", "cik" : "1106500"},
+    {"Fund" : "Schoenfeld", "cik" : "1040198"},
+    {"Fund" : "Third Point", "cik" : "1040273"},
+    {"Fund" : "Viking Global", "cik" : "1103804"},
+    {"Fund" : "Soros Fund", "cik" : "1029160"},
+    {"Fund" : "Maverick", "cik" : "934639"},
+    {"Fund" : "DE Shaw", "cik" : "1009207"}
+]
 cik = [
+    "1423053",
+    "1736225",
+    "1294571",
+    "1603466",
+    "1569049",
+    "1439289",
     "1401388",
     "1410830",
     "1389507",
@@ -57,7 +89,8 @@ cik = [
 ]
 
 
-# # CREATE TABLE
+
+# CREATE TABLE
 # sql = '''
 # create table FakeTableWithAllHoldings (
 # filingDate text,
@@ -71,565 +104,157 @@ cik = [
 # c.execute(sql)
 
 
-for a in range(len(cik)):
-    print("now on fund number: " + str(a+1))
-    fund_cik = cik[a]
-    query = {
-        "query": {
-            "query_string": {
-                "query": "cik %s AND formType:13F-HR" % fund_cik
-            }
-        },
-        "from": "0",
-        "sort": [{"filedAt": {"order": "desc"}}]
-    }
-
-
-    filings = queryApi.get_filings(query)
-    #These next couple lines are to prevent double filings with a different fund which was occuring amongst a few of the funds
-    longName = filings.get('filings')[0].get('companyNameLong')
-    set_size = 0
-    for i in filings.get('filings'):
-        if(set_size > 4):
-            break
-        set_size += 1
-        if(i.get('companyNameLong') != longName):
-            continue
-        if(i.get('holdings') == None):
-               #print("skipped")
-            continue
-        if(i.get('periodOfReport') == None):
-            continue
-        filingDate = i.get('periodOfReport')
-        cik = i.get('cik')
-        fund_name = i.get('companyNameLong')
-        print("filingDate: " + filingDate + " fund_name: " + fund_name + " cik: " + cik)
-        #print(i.get('holdings'))
-
-        for j in i.get('holdings'):
-            s = j.get('shrsOrPrnAmt')
-            shares = str(s.get('sshPrnamt'))        
-            value = str(j.get('value'))                    
-            cusip = str(j.get('cusip'))        
-            nameOfIssuer = str(j.get('nameOfIssuer'))
-
-            #print("Shares: " + shares + " value: " + value + " cusip: " + cusip + " nameOfIssuer: " + nameOfIssuer + " filing Date: " + filingDate + " cik: " + cik) 
-            sql = "INSERT INTO FakeTableWithAllHoldings (cusip, nameOfIssuer, shares, value, filingDate, CIK) VALUES (%s, %s, %s, %s, %s, %s)" 
-            c.execute(sql,(cusip, nameOfIssuer, shares, value, filingDate,cik))
-            db.commit()     
-    print("finished with fund: " + fund_name)
-
-
-
-#This was for manually importing each fund by its hardcoded query
-
-
-        
-# print("finished second fund") 
-    
-    
-# This was for manually creating queries per fund by hardcoding their cik in.
-
-
-# query2 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik 1061165 AND formType:13F-HR"
-#         }
-#     },
-#     "from": "0",
-#     "sort": [{"filedAt": {"order": "desc"}}]
-# }
-    
-    
-    
-    
-    
-    
-    
-    
-# for i in range(len(cik)):
+# for a in range(len(cik)):
+#     print("now on fund number: " + str(a+1))
+#     fund_cik = cik[a]
 #     query = {
 #         "query": {
 #             "query_string": {
-#                 "query": "cik %s AND formType:13F-HR" % cik[i].get('cik')
+#                 "query": "cik %s AND formType:13F-HR" % fund_cik
 #             }
 #         },
 #         "from": "0",
 #         "sort": [{"filedAt": {"order": "desc"}}]
 #     }
+#     print(query.get('query').get('query_string').get('query') + "fund_cik is: " + fund_cik)
+    
 #     filings = queryApi.get_filings(query)
-#     # print(filings)
-#     all_filings.append(filings)
-#     print(cik[i].get('Fund'))
-    # if not os.path.exists("filings"):
-    #     os.mkdir("filings")
-    # with open('filings/Citadel.json', 'w', encoding='utf-8') as f:
-    #     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-
-# #Citadel
-# query1 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-
-
-
-
-
-
-# #ExodusPoint
-# query2 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query2)
-# with open('filings/ExodusPoint.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Millburn RidgeField
-# query3 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query3)
-# with open('filings/Millburn_Ridgefield.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Point72
-# query4 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query4)
-# with open('filings/Point72.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Light Street
-# query5 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query5)
-# with open('filings/Light_Street.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Toscafund
-# query6 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query6)
-# with open('filings/Toscafund.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Valinor
-# query7 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query7)
-# with open('filings/Valinor.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Matrix Capital Co.
-# query8 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query8)
-# with open('filings/Matrix_Capital_Co.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Discovery Capital
-# query9 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query9)
-# with open('filings/Discovery_Capital.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Healthcor
-# query10 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query10)
-# with open('filings/Healthcor.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Bridgewater
-# query11 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query11)
-# with open('filings/Bridgewater.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Impala
-# query12 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query12)
-# with open('filings/Impala.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Marshall Wace
-# query13 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query13)
-# with open('filings/Marshall_Wace.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Lone Pine
-# query14 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query14)
-# with open('filings/Lone_Pine.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Intrepid Capital
-# query15 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query15)
-# with open('filings/Intrepid_Capital.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Sun Valley Gold
-# query16 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query16)
-# with open('filings/Sun_Valley_Gold.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Millennium
-# query17 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query17)
-# with open('filings/Millennium.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Balyasny
-# query18 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query18)
-# with open('filings/Balyasny.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Bridger
-# query19 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query19)
-# with open('filings/Bridger.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Tiger Global
-# query20 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query20)
-# with open('filings/Tiger_Global.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Second Curve
-# query21 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query21)
-# with open('filings/Second_Curve.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Coatue
-# query22 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query22)
-# with open('filings/Coatue.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Joho
-# query23 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query23)
-# with open('filings/Joho.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Schoenfeld
-# query24 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query24)
-# with open('filings/Schoenfeld.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Third Point
-# query25 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query25)
-# with open('filings/Third_Point.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Viking Global
-# query26 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query26)
-# with open('filings/Viking_Global.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Soros Fund
-# query27 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query27)
-# with open('filings/Soros_Fund.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #Maverick
-# query28 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query28)
-# with open('filings/Maverick.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
-
-# #DE Shaw
-# query29 = {
-#     "query": {
-#         "query_string": {
-#             "query": "cik:  AND formType:13F-HR" 
-#         }
-#     },
-#     "from": "0",
-#     "size": "12", 
-#     "sort": [{ "filedAt": { "order": "desc" } }]
-# }
-
-# filings = queryApi.get_filings(query29)
-# with open('filings/DE_Shaw.json', 'w', encoding='utf-8') as f:
-#     json.dump(filings, f, ensure_ascii=False, indent=4)
+#     #These next couple lines are to prevent double filings with a different fund which was occuring amongst a few of the funds
+#     set_size = 0
+#     for i in filings.get('filings'):
+#         if(set_size > 4):
+#             break
+#         set_size += 1
+#         if(i.get('cik') != fund_cik):
+#             continue
+#         if(i.get('holdings') == None):
+#                #print("skipped")
+#             continue
+#         if(i.get('periodOfReport') == None):
+#             continue
+#         filingDate = i.get('periodOfReport')
+        
+#         cik_of_fund = i.get('cik')
+        
+#         fund_name = i.get('companyNameLong')
+#         print("filingDate: " + str(filingDate) + " fund_name: " + str(fund_name) + " cik: " + str(cik[a]))
+#         #print(i.get('holdings'))
+
+#         for j in i.get('holdings'):
+#             all_filings.append(j)
+#             s = j.get('shrsOrPrnAmt')
+#             shares = str(s.get('sshPrnamt'))        
+#             value = str(j.get('value'))                    
+#             cusip = str(j.get('cusip'))        
+#             nameOfIssuer = str(j.get('nameOfIssuer'))
+#             print("Shares: " + shares + " value: " + value + " cusip: " + cusip + " nameOfIssuer: " + nameOfIssuer + " filing Date: " + filingDate + " cik: " + cik[a]) 
+#             sql = "INSERT INTO FakeTableWithAllHoldings (cusip, nameOfIssuer, shares, value, filingDate, CIK) VALUES (%s, %s, %s, %s, %s, %s)" 
+#             c.execute(sql,(cusip, nameOfIssuer, shares, value, filingDate,cik[a]))
+#             db.commit()     
+#     print("finished with fund: " + fund_name)
+# print("Here is a collection of all the filings:")
+# print(all_filings)
+
+create_temp_table = '''
+Create temporary table sumValues
+select sum(valueInDollars) as valSum,cik,cusip,filingDate,nameOfIssuer
+from All_Holdings_Raw_Data
+where filingDate = "2021-03-31"
+group by filingDate, cik, cusip;
+'''
+
+get_top_25 = '''
+
+SELECT * 
+FROM (
+    SELECT s.valSum,s.cik,s.cusip,s.nameOfIssuer,s.filingDate,f.name, RANK() OVER (PARTITION BY s.CIK, s.filingDate ORDER BY s.valSum desc,s.nameOfIssuer) AS rnk
+    FROM sumValues s, HF_Data f 
+    Where s.CIK = f.CIK
+    order by s.cik, rnk
+) AS x
+WHERE rnk <= 25;
+'''
+drop_temp_table = "drop temporary table sumValues;"
+c.execute(create_temp_table)
+c.execute(get_top_25)
+data=c.fetchall()
+c.execute(drop_temp_table)
+
+json_stocks_string = json.dumps(data)
+json_stocks = json.loads(json_stocks_string)
+
+fund_dict = {}
+stock_dict = {}
+best_stocks = []
+
+for i in json_stocks:
+    print(i)
+    i_cik = i[1]
+    i_rnk = i[6]
+    print(str(i_cik) + " " + str(i_rnk))
+    fund_dict[i_cik] = i_rnk
+keys = list(fund_dict)
+#print(len(keys))
+for i in json_stocks:
+    i_cusip = i[2]
+    stock_dict[i_cusip] = 0
+for i in json_stocks:
+    i_cusip = i[2]
+    i_nameOfIssuer = i[3]
+    name_and_cusip = (i_cusip,i_nameOfIssuer)
+    i_rnk = i[6]
+    divisor = fund_dict[i[1]]
+    new_rank = int(i_rnk)/int(divisor)
+    # this is going to skew the rating by 0.04 because the rankings go from 1-25, which when divided by the max of 25, is .04-1
+    if(new_rank <= 0.2):
+        new_rank = 5
+    elif(0.2 < new_rank <= 0.4):
+        new_rank = 4
+    elif(0.4 < new_rank <= 0.6):
+        new_rank = 3
+    elif(0.6 < new_rank <= 0.8):
+        new_rank = 2
+    elif(0.8 < new_rank <= 1):
+        new_rank = 1
+    # print("this is the stock name and cusip: " + str(name_and_cusip))
+    stock_dict[i_cusip] += new_rank
+    #print(str(stock_dict[cusip]))
+stocks = list(stock_dict)
+for i in range(len(stock_dict)):
+    stock_dict[stocks[i]] /= 27
+    #print(stocks[i] + " " + str(stock_dict[stocks[i]]))
+stock_dict = dict(sorted(stock_dict.items(), key=operator.itemgetter(1),reverse=True))
+stocks = list(stock_dict)
+for i in range(1,11):
+    best_stocks.append(stocks[i])
+#print(best_stocks)
+
+return_list = []
+
+#print(list_of_top_11[1])
+
+def validate_nine_chars(cusip):
+     if(cusip == "46090"):
+         return "46090E103"
+     zero = 0
+     while(len(cusip) < 9):
+         cusip = str(zero) + cusip
+     #print("this is the full 9-digit cusip: " + cusip)
+     return cusip
+
+# this is for transforming the CUSIP into a stock ticker.
+for i in range(len(best_stocks)):
+    cusip = validate_nine_chars(best_stocks[i])   
+    urlBeg = 'https://finnhub.io/api/v1/search?q='
+    urlEnd = '&token=c3rnfbaad3i88nmm0ai0'
+    fullUrl = str(urlBeg)+str(cusip)+str(urlEnd)
+    r = requests.get(fullUrl)
+    f = r.json()
+    #print(f)
+    temp = f.get('result')
+    temp2 = temp[0].get('symbol')
+    return_list.append(temp2)
+
+print(return_list)
+
+c.close()
