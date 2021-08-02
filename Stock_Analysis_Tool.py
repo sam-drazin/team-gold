@@ -6,10 +6,40 @@
 # Command line is giving this error:
 #
 #
+# IMPORTS FOR EDGAR
 from sec_api import QueryApi
 import simplejson as json
+# 
+# 
+# IMPORTS FOR SQL DB CONNECTION
 import pymysql,os,requests,operator
-
+#
+#
+# IMPORTS FOR LSTM
+import time
+start_time = time.time()
+##Import the libraries
+# Warnings
+import warnings
+warnings.filterwarnings('ignore')
+## math library for mathematical function
+import math
+## labeled data view in dataframe
+import pandas as pd
+#import pandas_datareader as web
+## data reader od panda is used fetch the data from web
+import pandas_datareader as web
+## numpy is used to create multi dimensional array
+import numpy as np
+## tensorflow is uded to create DL model and wrapping the other libraries
+import tensorflow as tf
+## sklearn is providing ultility functions for standerdizing or scaling data
+from sklearn.preprocessing import MinMaxScaler
+## keras is a neural network library
+from keras.layers import LSTM
+from keras.layers import Dense
+from keras.models import Sequential
+import datetime as dt
 
 
 
@@ -163,26 +193,35 @@ where filingDate = "2021-03-31"
 group by filingDate, cik, cusip;
 '''
 
-get_top_25 = '''
-
-SELECT * 
+create_second_temp_table = '''
+Create temporary table sumValues2
+select sum(valueInDollars) as valSum,cik,cusip,filingDate,nameOfIssuer
+from All_Holdings_Raw_Data
+where filingDate in ("2020-12-31")
+group by filingDate, cik, cusip;
+'''
+get_top_25_plus_turnover = '''
+SELECT valSum,cik,cusip,nameOfIssuer,filingDate,name,rnk,totals
 FROM (
-    SELECT s.valSum,s.cik,s.cusip,s.nameOfIssuer,s.filingDate,f.name, RANK() OVER (PARTITION BY s.CIK, s.filingDate ORDER BY s.valSum desc,s.nameOfIssuer) AS rnk
-    FROM sumValues s, HF_Data f 
-    Where s.CIK = f.CIK
+    SELECT s.valSum,s.cik,s.cusip,s.nameOfIssuer,s.filingDate,f.name, v.filingDate as vfilingDate, v.CIK as vCIK, v.valSum as vValSum, (s.valSum - ifnull(v.Valsum,0)) as totals , RANK() OVER  (PARTITION BY s.CIK, s.filingDate ORDER BY s.valSum desc,s.nameOfIssuer) AS rnk
+    FROM sumValues as s
+    LEFT JOIN sumValues2 as v on (s.CIK = v.CIK and s.cusip=v.cusip and v.filingDate = "2020-12-31")
+    LEFT JOIN HF_Data as f on (s.CIK = f.CIK)
     order by s.cik, rnk
 ) AS x
-WHERE rnk <= 25;
+WHERE x.rnk <= 25;
 '''
 drop_temp_table = "drop temporary table sumValues;"
 c.execute(create_temp_table)
-c.execute(get_top_25)
-data=c.fetchall()
+c.execute(create_second_temp_table)
+c.execute(get_top_25_plus_turnover)
+data = c.fetchall()
 c.execute(drop_temp_table)
-
 json_stocks_string = json.dumps(data)
 json_stocks = json.loads(json_stocks_string)
-
+print(json_stocks)
+# for i in json_stocks:
+# #     print(i)
 fund_dict = {}
 stock_dict = {}
 best_stocks = []
@@ -191,10 +230,10 @@ for i in json_stocks:
     print(i)
     i_cik = i[1]
     i_rnk = i[6]
-    print(str(i_cik) + " " + str(i_rnk))
+    # print(str(i_cik) + " " + str(i_rnk))
     fund_dict[i_cik] = i_rnk
 keys = list(fund_dict)
-#print(len(keys))
+print(len(keys))
 for i in json_stocks:
     i_cusip = i[2]
     stock_dict[i_cusip] = 0
@@ -255,6 +294,172 @@ for i in range(len(best_stocks)):
     temp2 = temp[0].get('symbol')
     return_list.append(temp2)
 
-print(return_list)
+# print(return_list)
+
+# LSTM SECTION
+def quarter(date):
+    if date.month == 1:
+        year = date.year - 1
+        return str(year) + '-09-30'
+
+    elif date.month == 2:
+        year = date.year - 1
+        if date.day < 16:
+          return str(year) + '-09-30'
+        return str(year) + '-12-31'
+
+    elif date.month == 3:
+        year = date.year - 1
+        return str(year) + '-12-31'
+
+    elif date.month == 4:
+      year = date.year - 1
+      return str(year) + '-12-31'
+    
+    elif date.month == 5:
+      year = date.year - 1
+      if date.day < 16:
+        return str(year) + '-12-31'
+      return str(date.year) + '-03-31'
+    
+    elif date.month == 6:
+      return str(date.year) + '-03-31'
+    
+    elif date.month == 7:
+      return str(date.year) + '-03-31'
+    
+    elif date.month == 8:
+      if date.day < 16:
+        return str(date.year) + '-03-31'
+      return str(date.year) + '-06-30'
+    
+    elif date.month == 9:
+      return str(date.year) + '-06-30'
+    
+    elif date.month == 10:
+      return str(date.year) + '-06-30'
+    
+    elif date.month == 11:
+      if date.day < 16:
+        return str(date.year) + '-06-30'
+      return str(date.year) + '-09-30'
+    
+    elif date.month == 12:
+      return str(date.year) + '-09-30'
+def predict(company):
+    start = dt.datetime(2018,1,1)
+    end = dt.datetime.now()
+    data_frame = web.DataReader(company, 'yahoo', start, end)
+    d = quarter(end)
+
+    scaling_data_frame = data_frame.filter(['Open','High','Low','Close','Adj Close','Volume'])
+    ## Scaling the features
+    scaler = MinMaxScaler(feature_range=(0,1))
+    ## Transform the data into
+    scaled_Data = scaler.fit_transform(scaling_data_frame)
+    ## Display the scaled features into dataframe
+    scaled_data_frame = pd.DataFrame(data=scaled_Data, columns=['Open','High','Low','Close','Adj Close','Volume'] )
+
+
+    ## Create a seperate dataframe with only colse column
+    stock_close_data = data_frame.filter(['Close'])
+
+    ## Convert created dataframe into numpy array
+    stock_close_dataset = stock_close_data.values
+
+    df1 = data_frame['2000-01-01':d]
+    trainingDataLength = len(df1)
+
+
+    ## Scaling the data its come under preprocessing stage
+    ## Create feature range into 0,1
+    scaler = MinMaxScaler(feature_range=(0,1))
+
+    ## Transform the data into
+    scaledData = scaler.fit_transform(stock_close_dataset)
+
+
+    ## Create a new dataset which contain scaled value
+    StockTrainData = scaledData[0:trainingDataLength , :]
+
+    ## Spliting the dataset into two parts such as Xtrain and Ytrain datasets
+    Xtrain = []
+    Ytrain = []
+
+    for i in range(60, len(StockTrainData)):
+      Xtrain.append(StockTrainData[i-60:i, 0])
+      Ytrain.append(StockTrainData[i, 0])
+
+
+    ## Convert Xtrain data, Ytrain data into numpy array
+    Xtrain = np.array(Xtrain)
+    Ytrain = np.array(Ytrain)
+
+    ## Reshape the Xtrain data (number of column and number of row)
+    Xtrain = np.reshape(Xtrain, (Xtrain.shape[0], Xtrain.shape[1], 1))
+
+    ## Develop LSTM model
+    model = Sequential()
+
+    ## Assign neurons as 50
+    neurons = 50
+
+    ## First LSTM layer
+    model.add(LSTM(neurons, return_sequences=True, input_shape= (Xtrain.shape[1], 1))) 
+
+    ## Second LSTM layer, no more layer for lstm so return_sequence is false
+    model.add(LSTM(neurons, return_sequences= False)) 
+
+    ## Adding Dense layer which always have 25 neurons by default
+    model.add(Dense(25)) 
+    model.add(Dense(1))
+
+
+    ##Compile  model
+    ## mse= mean squared error
+    model.compile(optimizer='adam', loss='mse')
+
+
+    ## Fiting model with given training dataset
+    history_data = model.fit(Xtrain, Ytrain, batch_size=50, epochs=50, verbose=2, validation_split=0.2)
+
+
+    ##Create testing dataset, new array which contains scaled value from 2275 out of 2843
+    testingData = scaledData[trainingDataLength - 60: , :]
+
+    ## Create dataset Xtest and Ytest
+    Xtest = []
+    Ytest = stock_close_dataset[trainingDataLength:, :]
+    for i in range(60, len(testingData)):
+        Xtest.append(testingData[i-60:i, 0])
+
+    ## Convert data into numpy array
+    Xtest = np.array(Xtest)
+
+
+    ## Reshape data from 2 Dimensional to 3 Dimensional
+    Xtest = np.reshape(Xtest, (Xtest.shape[0], Xtest.shape[1], 1 ))
+
+
+    ## Get predicted stock price value
+    ## Unscaling the predicted value
+    predictions = model.predict(Xtest)
+    predictions = scaler.inverse_transform(predictions)
+
+
+    # ## Ploting data to graph train and validation
+    training = stock_close_data[:trainingDataLength]
+    validation = stock_close_data[trainingDataLength:]
+    validation['Predictions'] = predictions
+
+    error = 100*np.mean(Ytest-predictions)/len(Ytest)
+    return round(error, 3)
+results = []
+for s in return_list:
+    print("Now predicting " + s)
+    results.append({s, predict(s)})
+print(results)
+
+
 
 c.close()
