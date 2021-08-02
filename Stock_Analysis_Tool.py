@@ -42,18 +42,26 @@ from keras.models import Sequential
 import datetime as dt
 
 
-
+# CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
 db = pymysql.connect(
-    host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
-    user='admin',
-    password='12345678',
-    db='HF_13f_filings')
+  host = 'your database hosting site',
+  user = 'your username',
+  password = 'your password',
+  db = 'Name of the database you are connecting to'
+)
+
+#OUR WORKING DB
+# db = pymysql.connect(
+#     host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
+#     user='admin',
+#     password='12345678',
+#     db='HF_13f_filings')
 c = db.cursor()
 
+#
+queryApi = QueryApi(api_key="Your API Key that can be obtained from the sec-api site") 
 
-# queryApi = QueryApi(api_key="2cbca106dd8006615cc5360d3752653aca521d4ba07b3f4b3316961b93eab3d2") #Your API Key that can be obtained from the sec-api site
 
-all_filings = []
 
 fund_to_cik = [ 
     {"Fund" : "Citadel", "cik" : "1423053"},
@@ -119,69 +127,70 @@ cik = [
 ]
 
 
-
+Your_Table_Name = "insert name here"
 # CREATE TABLE
-# sql = '''
-# create table FakeTableWithAllHoldings (
-# filingDate text,
-# shares int,
-# value int,
-# cusip varchar(255),
-# nameOfIssuer text,
-# CIK int
-# )
-# '''
-# c.execute(sql)
+sql = '''
+create table %s (
+filingDate text,
+shares int,
+value int,
+cusip varchar(255),
+nameOfIssuer text,
+CIK int
+)
+''' % Your_Table_Name
+c.execute(sql)
 
+all_filings = []
 
-# for a in range(len(cik)):
-#     print("now on fund number: " + str(a+1))
-#     fund_cik = cik[a]
-#     query = {
-#         "query": {
-#             "query_string": {
-#                 "query": "cik %s AND formType:13F-HR" % fund_cik
-#             }
-#         },
-#         "from": "0",
-#         "sort": [{"filedAt": {"order": "desc"}}]
-#     }
-#     print(query.get('query').get('query_string').get('query') + "fund_cik is: " + fund_cik)
+for a in range(len(cik)):
+    print("now on fund number: " + str(a+1))
+    fund_cik = cik[a]
+    query = {
+        "query": {
+            "query_string": {
+                "query": "cik %s AND formType:13F-HR" % fund_cik
+            }
+        },
+        "from": "0",
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+    print(query.get('query').get('query_string').get('query') + "fund_cik is: " + fund_cik)
     
-#     filings = queryApi.get_filings(query)
-#     #These next couple lines are to prevent double filings with a different fund which was occuring amongst a few of the funds
-#     set_size = 0
-#     for i in filings.get('filings'):
-#         if(set_size > 4):
-#             break
-#         set_size += 1
-#         if(i.get('cik') != fund_cik):
-#             continue
-#         if(i.get('holdings') == None):
-#                #print("skipped")
-#             continue
-#         if(i.get('periodOfReport') == None):
-#             continue
-#         filingDate = i.get('periodOfReport')
+    filings = queryApi.get_filings(query)
+    #These next couple lines are to prevent double filings with a different fund which was occuring amongst a few of the funds
+    set_size = 0
+    for i in filings.get('filings'):
+        if(set_size > 4):
+            break
+        set_size += 1
+        if(i.get('cik') != fund_cik):
+            continue
+        if(i.get('holdings') == None):
+               #print("skipped")
+            continue
+        if(i.get('periodOfReport') == None):
+            continue
+        filingDate = i.get('periodOfReport')
         
-#         cik_of_fund = i.get('cik')
+        cik_of_fund = i.get('cik')
         
-#         fund_name = i.get('companyNameLong')
-#         print("filingDate: " + str(filingDate) + " fund_name: " + str(fund_name) + " cik: " + str(cik[a]))
-#         #print(i.get('holdings'))
+        fund_name = i.get('companyNameLong')
+        #print("filingDate: " + str(filingDate) + " fund_name: " + str(fund_name) + " cik: " + str(cik[a]))
+        #print(i.get('holdings'))
 
-#         for j in i.get('holdings'):
-#             all_filings.append(j)
-#             s = j.get('shrsOrPrnAmt')
-#             shares = str(s.get('sshPrnamt'))        
-#             value = str(j.get('value'))                    
-#             cusip = str(j.get('cusip'))        
-#             nameOfIssuer = str(j.get('nameOfIssuer'))
-#             print("Shares: " + shares + " value: " + value + " cusip: " + cusip + " nameOfIssuer: " + nameOfIssuer + " filing Date: " + filingDate + " cik: " + cik[a]) 
-#             sql = "INSERT INTO FakeTableWithAllHoldings (cusip, nameOfIssuer, shares, value, filingDate, CIK) VALUES (%s, %s, %s, %s, %s, %s)" 
-#             c.execute(sql,(cusip, nameOfIssuer, shares, value, filingDate,cik[a]))
-#             db.commit()     
-#     print("finished with fund: " + fund_name)
+        for j in i.get('holdings'):
+            all_filings.append(j)
+            s = j.get('shrsOrPrnAmt')
+            shares = str(s.get('sshPrnamt'))        
+            value = str(j.get('value'))                    
+            cusip = str(j.get('cusip'))        
+            nameOfIssuer = str(j.get('nameOfIssuer'))
+            #print("Shares: " + shares + " value: " + value + " cusip: " + cusip + " nameOfIssuer: " + nameOfIssuer + " filing Date: " + filingDate + " cik: " + cik[a]) 
+            sql = "INSERT INTO FakeTableWithAllHoldings (cusip, nameOfIssuer, shares, value, filingDate, CIK) VALUES (%s, %s, %s, %s, %s, %s)" 
+            c.execute(sql,(cusip, nameOfIssuer, shares, value, filingDate,cik[a]))
+            db.commit()     
+    print("finished with fund: " + fund_name)
 # print("Here is a collection of all the filings:")
 # print(all_filings)
 
