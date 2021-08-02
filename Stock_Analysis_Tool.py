@@ -60,72 +60,69 @@ c = db.cursor()
 
 #
 queryApi = QueryApi(api_key="Your API Key that can be obtained from the sec-api site") 
-
-
-
-fund_to_cik = [ 
-    {"Fund" : "Citadel", "cik" : "1423053"},
-    {"Fund" : "ExodusPoint", "cik" : "1736225"},
-    {"Fund" : "Millburn RidgeField", "cik" : "1294571"},
-    {"Fund" : "Point72", "cik" : "1603466"},
-    {"Fund" : "Light Street", "cik" : "1569049"},
-    {"Fund" : "Toscafund", "cik" : "1439289"},
-    {"Fund" : "Valinor", "cik" : "1401388"},
-    {"Fund" : "Matrix Capital Co.", "cik" : "1410830"},
-    {"Fund" : "Discovery Capital", "cik" : "1389507"},
-    {"Fund" : "Healthcor", "cik" : "1343781"},
-    {"Fund" : "Bridgewater", "cik" : "1350694"},
-    {"Fund" : "Impala", "cik" : "1317679"},
-    {"Fund" : "Marshall Wace", "cik" : "1318757"},
-    {"Fund" : "Lone Pine", "cik" : "1061165"},
-    {"Fund" : "Intrepid Capital", "cik" : "1092838"},
-    {"Fund" : "Sun Valley Gold", "cik" : "1280493"},
-    {"Fund" : "Millennium", "cik" : "1273087"},
-    {"Fund" : "Balyasny", "cik" : "1218710"},
-    {"Fund" : "Bridger", "cik" : "1166309"},
-    {"Fund" : "Tiger Global", "cik" : "1167483"},
-    {"Fund" : "Second Curve", "cik" : "1136704"},
-    {"Fund" : "Coatue", "cik" : "1135730"},
-    {"Fund" : "Joho", "cik" : "1106500"},
-    {"Fund" : "Schoenfeld", "cik" : "1040198"},
-    {"Fund" : "Third Point", "cik" : "1040273"},
-    {"Fund" : "Viking Global", "cik" : "1103804"},
-    {"Fund" : "Soros Fund", "cik" : "1029160"},
-    {"Fund" : "Maverick", "cik" : "934639"},
-    {"Fund" : "DE Shaw", "cik" : "1009207"}
-]
-cik = [
-    "1423053",
-    "1736225",
-    "1294571",
-    "1603466",
-    "1569049",
-    "1439289",
-    "1401388",
-    "1410830",
-    "1389507",
-    "1343781",
-    "1350694",
-    "1317679",
-    "1318757",
-    "1061165",
-    "1092838",
-    "1280493",
-    "1273087",
-    "1218710",
-    "1166309",
-    "1167483",
-    "1136704",
-    "1135730",
-    "1106500",
-    "1040198",
-    "1040273",
-    "1103804",
-    "1029160",
-    "934639",
-    "1009207"
-]
-
+ 
+# fund_to_cik = [ 
+#     {"Fund" : "Citadel", "cik" : "1423053"},
+#     {"Fund" : "ExodusPoint", "cik" : "1736225"},
+#     {"Fund" : "Millburn RidgeField", "cik" : "1294571"},
+#     {"Fund" : "Point72", "cik" : "1603466"},
+#     {"Fund" : "Light Street", "cik" : "1569049"},
+#     {"Fund" : "Toscafund", "cik" : "1439289"},
+#     {"Fund" : "Valinor", "cik" : "1401388"},
+#     {"Fund" : "Matrix Capital Co.", "cik" : "1410830"},
+#     {"Fund" : "Discovery Capital", "cik" : "1389507"},
+#     {"Fund" : "Healthcor", "cik" : "1343781"},
+#     {"Fund" : "Bridgewater", "cik" : "1350694"},
+#     {"Fund" : "Impala", "cik" : "1317679"},
+#     {"Fund" : "Marshall Wace", "cik" : "1318757"},
+#     {"Fund" : "Lone Pine", "cik" : "1061165"},
+#     {"Fund" : "Intrepid Capital", "cik" : "1092838"},
+#     {"Fund" : "Sun Valley Gold", "cik" : "1280493"},
+#     {"Fund" : "Millennium", "cik" : "1273087"},
+#     {"Fund" : "Balyasny", "cik" : "1218710"},
+#     {"Fund" : "Bridger", "cik" : "1166309"},
+#     {"Fund" : "Tiger Global", "cik" : "1167483"},
+#     {"Fund" : "Second Curve", "cik" : "1136704"},
+#     {"Fund" : "Coatue", "cik" : "1135730"},
+#     {"Fund" : "Joho", "cik" : "1106500"},
+#     {"Fund" : "Schoenfeld", "cik" : "1040198"},
+#     {"Fund" : "Third Point", "cik" : "1040273"},
+#     {"Fund" : "Viking Global", "cik" : "1103804"},
+#     {"Fund" : "Soros Fund", "cik" : "1029160"},
+#     {"Fund" : "Maverick", "cik" : "934639"},
+#     {"Fund" : "DE Shaw", "cik" : "1009207"}
+# ]
+# cik = [
+#     "1423053",
+#     "1736225",
+#     "1294571",
+#     "1603466",
+#     "1569049",
+#     "1439289",
+#     "1401388",
+#     "1410830",
+#     "1389507",
+#     "1343781",
+#     "1350694",
+#     "1317679",
+#     "1318757",
+#     "1061165",
+#     "1092838",
+#     "1280493",
+#     "1273087",
+#     "1218710",
+#     "1166309",
+#     "1167483",
+#     "1136704",
+#     "1135730",
+#     "1106500",
+#     "1040198",
+#     "1040273",
+#     "1103804",
+#     "1029160",
+#     "934639",
+#     "1009207"
+# ]
 
 Your_Table_Name = "insert name here"
 # CREATE TABLE
@@ -194,21 +191,76 @@ for a in range(len(cik)):
 # print("Here is a collection of all the filings:")
 # print(all_filings)
 
+def quarter(date):
+    if date.month == 1:
+        year = date.year - 1
+        return str(year) + '-09-30'
+
+    elif date.month == 2:
+        year = date.year - 1
+        if date.day < 16:
+          return str(year) + '-09-30'
+        return str(year) + '-12-31'
+
+    elif date.month == 3:
+        year = date.year - 1
+        return str(year) + '-12-31'
+
+    elif date.month == 4:
+      year = date.year - 1
+      return str(year) + '-12-31'
+    
+    elif date.month == 5:
+      year = date.year - 1
+      if date.day < 16:
+        return str(year) + '-12-31'
+      return str(date.year) + '-03-31'
+    
+    elif date.month == 6:
+      return str(date.year) + '-03-31'
+    
+    elif date.month == 7:
+      return str(date.year) + '-03-31'
+    
+    elif date.month == 8:
+      if date.day < 16:
+        return str(date.year) + '-03-31'
+      return str(date.year) + '-06-30'
+    
+    elif date.month == 9:
+      return str(date.year) + '-06-30'
+    
+    elif date.month == 10:
+      return str(date.year) + '-06-30'
+    
+    elif date.month == 11:
+      if date.day < 16:
+        return str(date.year) + '-06-30'
+      return str(date.year) + '-09-30'
+    
+    elif date.month == 12:
+      return str(date.year) + '-09-30'
+
+
+last_quarter = quarter(dt.datetime.now())
+two_ago = quarter(dt.datetime.now()-dt.timedelta(90))
+
 create_temp_table = '''
 Create temporary table sumValues
 select sum(valueInDollars) as valSum,cik,cusip,filingDate,nameOfIssuer
 from All_Holdings_Raw_Data
-where filingDate = "2021-03-31"
+where filingDate = "%s"
 group by filingDate, cik, cusip;
-'''
-
+''' % last_quarter
+print(create_temp_table)
 create_second_temp_table = '''
 Create temporary table sumValues2
 select sum(valueInDollars) as valSum,cik,cusip,filingDate,nameOfIssuer
 from All_Holdings_Raw_Data
-where filingDate in ("2020-12-31")
+where filingDate in ("%s")
 group by filingDate, cik, cusip;
-'''
+''' % two_ago
+print(create_second_temp_table)
 get_top_25_plus_turnover = '''
 SELECT valSum,cik,cusip,nameOfIssuer,filingDate,name,rnk,totals
 FROM (
@@ -228,7 +280,7 @@ data = c.fetchall()
 c.execute(drop_temp_table)
 json_stocks_string = json.dumps(data)
 json_stocks = json.loads(json_stocks_string)
-print(json_stocks)
+#print(json_stocks)
 # for i in json_stocks:
 # #     print(i)
 fund_dict = {}
@@ -306,55 +358,6 @@ for i in range(len(best_stocks)):
 # print(return_list)
 
 # LSTM SECTION
-def quarter(date):
-    if date.month == 1:
-        year = date.year - 1
-        return str(year) + '-09-30'
-
-    elif date.month == 2:
-        year = date.year - 1
-        if date.day < 16:
-          return str(year) + '-09-30'
-        return str(year) + '-12-31'
-
-    elif date.month == 3:
-        year = date.year - 1
-        return str(year) + '-12-31'
-
-    elif date.month == 4:
-      year = date.year - 1
-      return str(year) + '-12-31'
-    
-    elif date.month == 5:
-      year = date.year - 1
-      if date.day < 16:
-        return str(year) + '-12-31'
-      return str(date.year) + '-03-31'
-    
-    elif date.month == 6:
-      return str(date.year) + '-03-31'
-    
-    elif date.month == 7:
-      return str(date.year) + '-03-31'
-    
-    elif date.month == 8:
-      if date.day < 16:
-        return str(date.year) + '-03-31'
-      return str(date.year) + '-06-30'
-    
-    elif date.month == 9:
-      return str(date.year) + '-06-30'
-    
-    elif date.month == 10:
-      return str(date.year) + '-06-30'
-    
-    elif date.month == 11:
-      if date.day < 16:
-        return str(date.year) + '-06-30'
-      return str(date.year) + '-09-30'
-    
-    elif date.month == 12:
-      return str(date.year) + '-09-30'
 def predict(company):
     start = dt.datetime(2018,1,1)
     end = dt.datetime.now()
