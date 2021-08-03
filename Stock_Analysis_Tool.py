@@ -44,20 +44,21 @@ from keras.models import Sequential
 
 
 # CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
-db = pymysql.connect(
-  host = 'your database hosting site',
-  user = 'your username',
-  password = 'your password',
-  db = 'Name of the database you are connecting to'
-)
-c = db.cursor()
-#OUR WORKING DB
 # db = pymysql.connect(
-#     host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
-#     user='admin',
-#     password='12345678',
-#     db='HF_13f_filings')
+#   host = 'your database hosting site',
+#   user = 'your username',
+#   password = 'your password',
+#   db = 'Name of the database you are connecting to'
+# )
 # c = db.cursor()
+
+# OUR WORKING DB
+db = pymysql.connect(
+    host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
+    user='admin',
+    password='12345678',
+    db='HF_13f_filings')
+c = db.cursor()
 
 
 
@@ -151,7 +152,7 @@ SELECT valSum,cik,cusip,nameOfIssuer,filingDate,name,rnk,totals
 FROM (
     SELECT s.valSum,s.cik,s.cusip,s.nameOfIssuer,s.filingDate,f.name, v.filingDate as vfilingDate, v.CIK as vCIK, v.valSum as vValSum, (s.valSum - ifnull(v.Valsum,0)) as totals , RANK() OVER  (PARTITION BY s.CIK, s.filingDate ORDER BY s.valSum desc,s.nameOfIssuer) AS rnk
     FROM sumValues as s
-    LEFT JOIN sumValues2 as v on (s.CIK = v.CIK and s.cusip=v.cusip and v.filingDate = "%s-12-31")
+    LEFT JOIN sumValues2 as v on (s.CIK = v.CIK and s.cusip=v.cusip and v.filingDate = "%s")
     LEFT JOIN HF_Data as f on (s.CIK = f.CIK)
     order by s.cik, rnk
 ) AS x
@@ -166,7 +167,15 @@ c.execute(get_top_25_plus_turnover)
 data = c.fetchall()
 c.execute(drop_temp_table)
 json_stocks_string = json.dumps(data)
-json_stocks = json.loads(json_stocks_string)
+json_stocks = (json.loads(json_stocks_string))
+
+import csv
+
+with open("out.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["valSum","cik","cusip","nameOfIssuer","filingDate","name","rnk","totals"])
+    writer.writerows(json_stocks)
+
 
 fund_dict = {}
 stock_dict = {}
