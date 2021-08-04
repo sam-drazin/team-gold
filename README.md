@@ -96,10 +96,10 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 7. Click "OK".<br />
 
 # Running the Stock Analysis Tool
-1. Before any stocks can be recommended, the database must be built. In In Stock_Analysis_Tool.py, Create_Table_And_Import_Data_From_EDGAR.py, and Import_Data_To_DB.py enter your hostname (also known as endpoint), username, password and database name as indicated in the program. Make sure they are all entered as strings (they should be in quotation marks). 
+1. Before any stocks can be recommended, the database must be built. In Stock_Analysis_Tool.py, Create_Table_And_Import_Data_From_EDGAR.py, and Import_Data_To_DB.py enter your hostname (also known as endpoint), username, password and database name as indicated in the program. Make sure they are all entered as strings (they should be in quotation marks). 
 2. Additionally, enter your QueryAPI in Import_Data_To_DB (line 27). This will allow the program to query EDGAR's database and download the 13F filings. 
 3. Finally, in Create_Table_And_Import_Data_From_EDGAR.py, enter the desired name for the created table, where indicated. 
-    * Make sure each of these are copied exactly and contain no extra spaces or other characters, as any error will prevent the program from connection to the database.<br />
+    * Make sure each of these are copied exactly and contain no extra spaces or other characters, as any error will prevent the program from connecting to the database.<br />
 4. Once this is done, simply run Stock_Analysis_Tool.py from your command line using python3.
 5. If there is no table in the database, the program will create a new table in the database you have created. It will then download the 13F filings from EDGAR using the SEC-API and will enter each fund's holdings into the database. 
 6. On any subsequent uses of the stock analysis tool, there will be no need to create a table. Instead, the program will check whether or not the databse contains the most recent filings for each fund. If it does not contain the most recent data, the program will query EDGAR's database and input the data into the table in the database you have created before continuing.<br />
@@ -108,9 +108,9 @@ These are the hedge funds that are used in the Stock Analysis Tool:
     * Stocks that are in a fund's top 1-5 holdings receive 5 points, stocks in a fund's top 6-10 holdings receive 4 points, stocks in a fund's top 11-15 holdings receive 3 points, stocks in a fund's top 16-20 holdings receive 2 points, and stocks in a fund's top 21-25 holdings receive 1 point.
 9. The program will take the CUSIP numbers and use the Finnhub API to find each the stock symbol the corresponds to each CUSIP.
 10. The program will then take the top twenty-five stocks, based on the score mentioned above and run a Long-Short-Term-Memory (LSTM) prediction on each one. The code used for this prediction is based on the tutorial found [here](https://www.datasciencecentral.com/profiles/blogs/stock-price-prediction-using-lstm-long-short-term-memory). 
-11. The LSTM model analyzes the patterns in each stock's daily close price from January 1, 2018 until the end of the most recent quarter for which data is available. This provides a possible to have an outlook into a fund's possible thinking when they heal each position at the end of the quarter. Additionally, it allows the user to verify if the stock has performed up to the model's expectations from the end of the quarter until the day on which the program is being run. <br />
+11. The LSTM model analyzes the patterns in each stock's daily close price from January 1, 2018 until the end of the most recent quarter for which data is available. This provides a possibility to have an outlook into a fund's possible thinking when they held each position at the end of the quarter. Additionally, it allows the user to verify if the stock has performed up to the model's expectations from the end of the quarter until the day on which the program is being run. <br />
     * Each stock's data is obtained by using the Pandas Datareader to pull the data from [Yahoo! Finance](finance.yahoo.com).
-12. The program will return a .csv containing each fund's top twenty-five holdings as well as an additional .csv file containing the top twenty-five stocks based on their score and the percent error of each stock's prediction.
+12. The program will return a .csv file containing each fund's top twenty-five holdings as well as an additional .csv file containing the top twenty-five stocks based on their score and the percent error of each stock's prediction.
 13. The percent error indicates how close the model was to correctly predicting the stock - the closer to zero percent, the more accurate the prediction. If the percentage is positive, the stock outperformed the model's predictions and if it is negative, it underperformed predictions. 
 
 ****
