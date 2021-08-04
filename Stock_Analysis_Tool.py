@@ -42,7 +42,7 @@ from keras.layers import LSTM
 from keras.layers import Dense
 from keras.models import Sequential
 
-
+import csv
 
 # CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
 # db = pymysql.connect(
@@ -78,6 +78,8 @@ c = db.cursor()
 # into the table
 Your_Table_Name = create_Table_and_Import.run_create_and_import()
 
+#Find the date of the last available filing.
+#@param date is the date on which the code is being run
 def quarter(date):
     if date.month == 1:
         year = date.year - 1
@@ -131,6 +133,8 @@ def quarter(date):
 last_quarter = quarter(dt.datetime.now())
 two_ago = quarter(dt.datetime.now()-dt.timedelta(90))
 
+#Check if database contains the most updated filings
+#If not, add the newest data to the database
 def check_if_db_is_updated():
   sql = '''
   SELECT * FROM %s.%s
@@ -188,6 +192,7 @@ fund_dict = {}
 stock_dict = {}
 best_stocks = []
 
+# Assign a score to each stock based on its placement in each fund's top 25
 for i in json_stocks:
     i_cik = i[1]
     i_rnk = i[6]
@@ -246,7 +251,10 @@ for i in range(len(best_stocks)):
     return_list.append(temp2)
 
 
-# LSTM SECTION
+# Runs the LSTM model on a stock ticker, using training data since January 1, 2018
+# @param company is the stock ticker of the company being predicted
+# @return the average percent error of actual vs. predicted results.
+# percent error is given by 100 * (actual - predicted) / actual
 def predict(company):
     start = dt.datetime(2018,1,1)
     end = dt.datetime.now()
@@ -345,6 +353,7 @@ def predict(company):
 
     error = 100*np.mean(Ytest-predictions)/len(Ytest)
     return round(error, 3)
+
 results = []
 for s in return_list:    
     results.append({s, predict(s)})

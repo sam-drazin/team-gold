@@ -1,3 +1,6 @@
+#This function queries the hedge fund data from a list of CIKs
+#Downloads the data as .json files (one per fund), reads the data from the files and puts it into the database.
+#@param number_of_quarters is the number of most recent quarters for which data should be pulled.
 def run_import(number_of_quarters):
     # IMPORTS FOR CHECKING IF DB IS UP TO DATE
     import datetime as dt 
@@ -24,6 +27,7 @@ def run_import(number_of_quarters):
     #     db='HF_13f_filings')
     # c = db.cursor()
 
+    #ENTER YOUR OWN QUERY API
     queryApi = QueryApi(api_key="Your API Key that can be obtained from the sec-api site") 
     
     cik = [
@@ -61,6 +65,7 @@ def run_import(number_of_quarters):
     all_filings = []
 
     for a in range(len(cik)):
+        #Download the data for the funds identified by each CIK
         fund_cik = cik[a]
         query = {
             "query": {
@@ -75,7 +80,7 @@ def run_import(number_of_quarters):
         print(query.get('query').get('query_string').get('query') + "fund_cik is: " + fund_cik)
 
         filings = queryApi.get_filings(query)
-        #These next couple lines are to prevent double filings with a different fund which was occuring amongst a few of the funds
+        #These next few lines are to prevent double filings with a different fund which was occuring amongst a few of the funds
         set_size = 0
         for i in filings.get('filings'):
             if(set_size > 4):
@@ -87,6 +92,8 @@ def run_import(number_of_quarters):
                 continue
             if(i.get('periodOfReport') == None):
                 continue
+            
+            #Input the downloaded data into the database.
             filingDate = i.get('periodOfReport')        
             cik_of_fund = i.get('cik')
             fund_name = i.get('companyNameLong')
