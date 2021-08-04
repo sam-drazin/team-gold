@@ -40,7 +40,7 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 **Required Python Libraries to install**<br />
 1. All code must be run using python3<br />
 2. Install the following python libraries on your machine with the following commands:<br />
-    ```pip install -r requirements.txt```<br />
+    ```pip3 install -r requirements.txt```<br />
 
 **Setting up Amazon Web Services RDS**<br />
 1. From the AWS Management console open EC2<br />
