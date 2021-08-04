@@ -1,4 +1,4 @@
-# Team Gold Stock Analysis Tool
+## Team Gold Stock Analysis Tool
 Students will build a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project will require students to gather, clean, and combine data from the multiple data sources.  The consolidated data will then be analyzed to provide the end user with insight to support stock selection decision-making. The tool should be designed so that data and analysis can be easily updated by the end user as data refreshes become available.
 
 # Summary
@@ -31,28 +31,28 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 * Tiger Global Management, L.L.C.
 * Toscafund Asset Management, L.L.P.
 
-# Steps to Use the Stock Analysis Tool
+## Steps to Use the Stock Analysis Tool
 1. Clone this repository to your machine using the command ```git clone https://github.com/davidlifschitz/team-gold.git```
-2. Set up a MySQL database (Using Amazon RDS is recommended - see steps listed below).
-3. (Optional) Connect to the database in MySQL workbench (see steps listed below).
-4. Create an account at [SEC-API](https://sec-api.io/) to obtain an API Key.
-5. Input the relevant database information and query API where listed below.
-6. Install the necessary libraries on your machine using the command ```pip3 install -r requirements.txt```
+2. Install the necessary libraries on your machine using the command ```pip3 install -r requirements.txt```
+3. Set up a MySQL database (Using Amazon RDS is recommended - see steps listed below).
+4. (Optional) Connect to the database in MySQL workbench (see steps listed below).
+5. Create an account at [SEC-API](https://sec-api.io/) to obtain an API Key.
+6. Input the relevant database information and query API where listed below.
 7. Run the program using python3.
 8. View the files that have been created in your working directory.
 
 # Prerequisites 
-**Clone Repo**
+**1. Clone Repo**
 1. Open the command line interface on your local machine
 2. Clone the repo with the command: <br />
     ```git clone https://github.com/davidlifschitz/team-gold.git```
 
-**Required Python Libraries to install**<br />
+# 2. Installing Required Python Libraries
 1. All code must be run using python3<br />
 2. Install the following python libraries on your machine with the following commands:<br />
     ```pip3 install -r requirements.txt```<br />
 
-**Setting up Amazon Web Services RDS**<br />
+# 3. Setting up Amazon Web Services RDS
 1. From the AWS Management console open EC2<br />
 2. Click the orange "Create security group" button.<br />
 3. Choose a "Security group name" and "Description".<br />
@@ -80,7 +80,7 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 20. Once the database is created (it will take a few minutes), find the "Endpoint" and "Port" (the port should be 3306).<br />
     * Save these for later use.
 
-**(Optional) Setting up MySQL Workbench**<br />
+# 4. (Optional) Setting up MySQL Workbench
 1. Download MySQL Workbench from [here](https://dev.mysql.com/downloads/workbench/)<br />
 2. Click the "+" to add a new connection.<br />
 3. Create a "Connection Name".<br />
@@ -89,12 +89,12 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 6. Enter your database "Master username" under "username" and your database "Master password" under "Password".<br />
 7. Click "OK".<br />
 
-**Create an SEC-API Account**<br />
+# 5. Create an SEC-API Account
 1. Go to https://sec-api.io/<br />
 2. Click "Get Free API Key" and create an account.<br />
 3. Save your API key.<br />
 
-# Running the Stock Analysis Tool
+# 6. Running the Stock Analysis Tool
 1. Before any stocks can be recommended, the database must be built. In Stock_Analysis_Tool.py, Create_Table_And_Import_Data_From_EDGAR.py, and Import_Data_To_DB.py enter your hostname (also known as endpoint), username, password and database name as indicated in the program. Make sure they are all entered as strings (they should be in quotation marks). 
 2. Additionally, enter your QueryAPI in Import_Data_To_DB (line 27). This will allow the program to query EDGAR's database and download the 13F filings. 
 3. Finally, in Create_Table_And_Import_Data_From_EDGAR.py, enter the desired name for the created table, where indicated. 
