@@ -28,7 +28,6 @@ warnings.filterwarnings('ignore')
 import math
 ## labeled data view in dataframe
 import pandas as pd
-#import pandas_datareader as web
 ## data reader od panda is used fetch the data from web
 import pandas_datareader as web
 ## numpy is used to create multi dimensional array
