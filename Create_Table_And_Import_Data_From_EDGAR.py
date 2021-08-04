@@ -13,7 +13,7 @@ db = pymysql.connect(
   host = 'your database hosting site',
   user = 'your username',
   password = 'your password',
-  db = 'Name of the database you are connecting to'
+  db = 'Name of the database to which you are connecting'
 )
 c = db.cursor()
 
@@ -25,7 +25,9 @@ c = db.cursor()
 #     db='HF_13f_filings')
 # c = db.cursor()
 
+# CHANGE TABLE NAME TO WHAT YOU WANT THE TABLE TO BE CALLED
 Your_Table_Name = "insert name here"
+
 # CREATE TABLE
 sql = '''
 create table %s (

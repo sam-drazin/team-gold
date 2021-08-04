@@ -41,27 +41,28 @@ from keras.layers import LSTM
 from keras.layers import Dense
 from keras.models import Sequential
 
-
+import csv
 
 # CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
-# db = pymysql.connect(
-#   host = 'your database hosting site',
-#   user = 'your username',
-#   password = 'your password',
-#   db = 'Name of the database you are connecting to'
-# )
-# c = db.cursor()
-
-# OUR WORKING DB
 db = pymysql.connect(
-    host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
-    user='admin',
-    password='12345678',
-    db='HF_13f_filings')
+  host = 'your database hosting site',
+  user = 'your username',
+  password = 'your password',
+  db = 'Name of the database you are connecting to'
+)
 c = db.cursor()
 
+# OUR WORKING DB
+# db = pymysql.connect(
+#     host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
+#     user='admin',
+#     password='12345678',
+#     db='HF_13f_filings')
+# c = db.cursor()
 
 
+#Find the date of the last available filing.
+#@param date is the date on which the code is being run
 def quarter(date):
     if date.month == 1:
         year = date.year - 1
@@ -115,6 +116,8 @@ def quarter(date):
 last_quarter = quarter(dt.datetime.now())
 two_ago = quarter(dt.datetime.now()-dt.timedelta(90))
 
+#Check if database contains the most updated filings
+#If not, add the newest data to the database
 def check_if_db_is_updated():
   sql = '''
   SELECT * FROM HF_13f_filings.All_Holdings_Raw_Data
@@ -169,7 +172,6 @@ c.execute(drop_temp_table)
 json_stocks_string = json.dumps(data)
 json_stocks = (json.loads(json_stocks_string))
 
-import csv
 
 with open("out.csv", "w", newline="") as f:
     writer = csv.writer(f)
@@ -181,6 +183,7 @@ fund_dict = {}
 stock_dict = {}
 best_stocks = []
 
+# Assign a score to each stock based on its placement in each fund's top 25
 for i in json_stocks:
     print(i)
     i_cik = i[1]
@@ -240,7 +243,10 @@ for i in range(len(best_stocks)):
     return_list.append(temp2)
 
 
-# LSTM SECTION
+# Runs the LSTM model on a stock ticker, using training data since January 1, 2018
+# @param company is the stock ticker of the company being predicted
+# @return the average percent error of actual vs. predicted results.
+# percent error is given by 100 * (actual - predicted) / actual
 def predict(company):
     start = dt.datetime(2018,1,1)
     end = dt.datetime.now()
@@ -339,6 +345,7 @@ def predict(company):
 
     error = 100*np.mean(Ytest-predictions)/len(Ytest)
     return round(error, 3)
+
 results = []
 for s in return_list:
     print("Now predicting " + s)
