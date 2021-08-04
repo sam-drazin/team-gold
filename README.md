@@ -40,17 +40,7 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 **Required Python Libraries to install**<br />
 1. All code must be run using python3<br />
 2. Install the following python libraries on your machine with the following commands:<br />
-    * pandas - ```pip install pandas```<br />
-    * pandas_datareader - ```pip install pandas_datareader```<br />
-    * numpy - ```pip install numpy```<br />
-    * tensorflow - ```pip install tensorflow```<br />
-    * sklearn - ```pip install sklearn```<br />
-    * keras - ```pip install keras```<br />
-    * sec-api - ```pip install sec-api```<br />
-    * pymysql - ```pip install pymysql```<br />
-    * Or to install all of them at once:
-```pip install pandas pandas_datareader numpy tensorflow sklearn keras sec-api pymysql```
-
+    ```pip3 install -r requirements.txt```<br />
 
 **Setting up Amazon Web Services RDS**<br />
 1. From the AWS Management console open EC2<br />
