@@ -1,4 +1,4 @@
-## Team Gold Stock Analysis Tool
+# Team Gold Stock Analysis Tool
 Students will build a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project will require students to gather, clean, and combine data from the multiple data sources.  The consolidated data will then be analyzed to provide the end user with insight to support stock selection decision-making. The tool should be designed so that data and analysis can be easily updated by the end user as data refreshes become available.
 
 # Summary
@@ -31,15 +31,14 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 * Tiger Global Management, L.L.C.
 * Toscafund Asset Management, L.L.P.
 
-## Steps to Use the Stock Analysis Tool
+# Steps to Use the Stock Analysis Tool
 1. Clone this repository to your machine using the command ```git clone https://github.com/davidlifschitz/team-gold.git```
 2. Install the necessary libraries on your machine using the command ```pip3 install -r requirements.txt```
 3. Set up a MySQL database (Using Amazon RDS is recommended - see steps listed below).
 4. (Optional) Connect to the database in MySQL workbench (see steps listed below).
 5. Create an account at [SEC-API](https://sec-api.io/) to obtain an API Key.
-6. Input the relevant database information and query API where listed below.
-7. Run the program using python3.
-8. View the files that have been created in your working directory.
+6. Input the relevant database information and query API where listed below and run the program using python3.
+7. View the files that have been created in your working directory.
 
 # Prerequisites 
 **1. Clone Repo**
