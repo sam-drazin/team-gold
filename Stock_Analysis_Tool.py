@@ -5,6 +5,7 @@
 # 
 # IMPORTING OTHER FILES
 import Import_Data_To_DB as import_data
+import Create_Table_And_Import_Data_From_EDGAR as create_Table_and_Import
 #
 # IMPORTS FOR CHECKING IF DB IS UP TO DATE
 import datetime as dt 
@@ -60,7 +61,10 @@ db = pymysql.connect(
     db='HF_13f_filings')
 c = db.cursor()
 
-
+# This will create the database table, 
+# and then import all holdings from the 13F Filing Data from each fund 
+# into the table
+# create_Table_and_Import.run_create_and_import()
 
 def quarter(date):
     if date.month == 1:
@@ -157,7 +161,7 @@ FROM (
     order by s.cik, rnk
 ) AS x
 WHERE x.rnk <= 25;
-''' % last_quarter
+''' % two_ago
 
 drop_temp_table = "drop temporary table sumValues;"
 
@@ -169,20 +173,12 @@ c.execute(drop_temp_table)
 json_stocks_string = json.dumps(data)
 json_stocks = (json.loads(json_stocks_string))
 
-import csv
-
-with open("out.csv", "w", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(["valSum","cik","cusip","nameOfIssuer","filingDate","name","rnk","totals"])
-    writer.writerows(json_stocks)
-
 
 fund_dict = {}
 stock_dict = {}
 best_stocks = []
 
 for i in json_stocks:
-    print(i)
     i_cik = i[1]
     i_rnk = i[6]
     fund_dict[i_cik] = i_rnk
@@ -214,7 +210,7 @@ for i in range(len(stock_dict)):
     stock_dict[stocks[i]] /= 27
 stock_dict = dict(sorted(stock_dict.items(), key=operator.itemgetter(1),reverse=True))
 stocks = list(stock_dict)
-for i in range(1,11):
+for i in range(1,2):
     best_stocks.append(stocks[i])
 
 return_list = []
@@ -343,5 +339,49 @@ results = []
 for s in return_list:
     print("Now predicting " + s)
     results.append({s, predict(s)})
-print(results)
+for res in results:
+    for each in res:
+          print(type(each))
+print("checkpoint2: post model")
+## THIS SECTION HERE ADDS THE DATA TO AN EXCEL SHEET AND CREATES IT IN THE SAME FOLDER
+
+# TOP 25 STOCKS OF EACH FUND TO A NEW SHEET IN THE EXCEL FILE
+df = pd.DataFrame(json_stocks)
+writer = pd.ExcelWriter('Stock_Analysis_Results.xlsx', engine='xlsxwriter')
+df = df.rename(columns = {0:"current Value (In Dollars)",1:"CIK", 2:"CUSIP", 3:"StockName", 4:"FilingDate", 5:"FundName", 6:"Ranked(By Total Value)",7:"Share Change Since Last Quarter"})
+df.to_excel(writer, sheet_name='TOP_25_STOCKS_OF_EACH_FUND')
+# TOP 25 STOCKS AVERAGED OVER ALL FUNDS 
+# PLUS PREDICTION ERROR AND SHARE PRICE DIFFERENCE BETWEEN MOST RECENT QUARTER & ITS PREVIOUS ONE
+list_results = []
+for stock_pred in results:
+    temp_list = []  
+    stock_pred = list(stock_pred)
+    stock_pred.sort(key = lambda item: ([str,float].index(type(item)), item))
+    temp_list.append(stock_pred[0])
+    temp_list.append(stock_pred[1])
+    start = quarter(dt.datetime.now())
+    end = dt.datetime.now()
+    company = stock_pred[0]
+    data_frame = web.DataReader(company, 'yahoo', start,end)
+    EOQ = data_frame['Close'].values[0]
+    current = data_frame['Close'].values[len(data_frame)-1]
+    temp_list.append(EOQ.round(decimals=2))
+    temp_list.append(current.round(decimals=2))
+    #print("this is the company: " + company)
+    #print("this is the start: " + str(EOQ))
+    #print("this is the end: " + str(current))
+    diff_dol = current - EOQ
+    diff_per = current/EOQ * 100
+    temp_list.append(diff_dol.round(decimals=2))
+    temp_list.append(diff_per.round(decimals=2))
+    #print("this is the difference in dollars: " + str(diff_dol.round(decimals=2)))
+    #print("this is the difference in percentage: " + str(diff_per.round(decimals=2)) + "%")
+    list_results.append(temp_list)
+print(list_results)
+
+
+df2 = pd.DataFrame(list_results)
+df2 = df2.rename(columns = {0:"Stock Ticker", 1:"Prediction Error", 2:"Closing Share Price on Date of Last Filing", 3: "Latest Share Price for Today", 4:"Change in Share Price($)", 5:"Change in Share Price(%)"})
+df2.to_excel(writer, sheet_name = 'Top25AvgOverAllFunds')
+writer.save()
 c.close()
