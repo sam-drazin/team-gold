@@ -52,19 +52,31 @@ from keras.models import Sequential
 #   db = 'Name of the database you are connecting to'
 # )
 # c = db.cursor()
+host='your database hosting site'
+user= 'your username'
+password= 'your password'
+db= 'Name of the database you are connecting to'
+
+
+#THIS WAS OUR DATABASE INFORMATION
+host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
+user='admin',
+password='12345678',
+db= 'HF_13f_filings'
 
 # OUR WORKING DB
 db = pymysql.connect(
-    host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
-    user='admin',
-    password='12345678',
-    db='HF_13f_filings')
+  host=host,
+  user=user, 
+  password=password,
+  db=db
+)
 c = db.cursor()
 
 # This will create the database table, 
 # and then import all holdings from the 13F Filing Data from each fund 
 # into the table
-# create_Table_and_Import.run_create_and_import()
+Your_Table_Name = create_Table_and_Import.run_create_and_import()
 
 def quarter(date):
     if date.month == 1:
@@ -121,15 +133,13 @@ two_ago = quarter(dt.datetime.now()-dt.timedelta(90))
 
 def check_if_db_is_updated():
   sql = '''
-  SELECT * FROM HF_13f_filings.All_Holdings_Raw_Data
+  SELECT * FROM %s.%s
   order by filingDate desc
   limit 1
-  '''
+  ''' % (db, Your_Table_Name)
   c.execute(sql)
   data=c.fetchall()
-  most_recent_date = []
-  print("The most recent quarter is: " + quarter(dt.datetime.now()))
-  print("The most recent quarter in the db is: " + data[0][0])
+  most_recent_date = []    
   if(quarter(dt.datetime.now()) != data[0][0]):
       import_data.run_import(1)
       
@@ -138,18 +148,18 @@ def check_if_db_is_updated():
 create_temp_table = '''
 Create temporary table sumValues
 select sum(valueInDollars) as valSum,cik,cusip,filingDate,nameOfIssuer
-from All_Holdings_Raw_Data
+from %s
 where filingDate = "%s"
 group by filingDate, cik, cusip;
-''' % last_quarter
+''' % (Your_Table_Name, last_quarter)
 
 create_second_temp_table = '''
 Create temporary table sumValues2
 select sum(valueInDollars) as valSum,cik,cusip,filingDate,nameOfIssuer
-from All_Holdings_Raw_Data
+from %s
 where filingDate in ("%s")
 group by filingDate, cik, cusip;
-''' % two_ago
+''' % (Your_Table_Name, two_ago)
 
 get_top_25_plus_turnover = '''
 SELECT valSum,cik,cusip,nameOfIssuer,filingDate,name,rnk,totals
@@ -336,13 +346,8 @@ def predict(company):
     error = 100*np.mean(Ytest-predictions)/len(Ytest)
     return round(error, 3)
 results = []
-for s in return_list:
-    print("Now predicting " + s)
+for s in return_list:    
     results.append({s, predict(s)})
-for res in results:
-    for each in res:
-          print(type(each))
-print("checkpoint2: post model")
 ## THIS SECTION HERE ADDS THE DATA TO AN EXCEL SHEET AND CREATES IT IN THE SAME FOLDER
 
 # TOP 25 STOCKS OF EACH FUND TO A NEW SHEET IN THE EXCEL FILE
@@ -356,7 +361,7 @@ list_results = []
 for stock_pred in results:
     temp_list = []  
     stock_pred = list(stock_pred)
-    stock_pred.sort(key = lambda item: ([str,float].index(type(item)), item))
+    stock_pred.sort(key = lambda item: ([str,np.float64].index(type(item)), item))
     temp_list.append(stock_pred[0])
     temp_list.append(stock_pred[1])
     start = quarter(dt.datetime.now())
@@ -366,18 +371,12 @@ for stock_pred in results:
     EOQ = data_frame['Close'].values[0]
     current = data_frame['Close'].values[len(data_frame)-1]
     temp_list.append(EOQ.round(decimals=2))
-    temp_list.append(current.round(decimals=2))
-    #print("this is the company: " + company)
-    #print("this is the start: " + str(EOQ))
-    #print("this is the end: " + str(current))
+    temp_list.append(current.round(decimals=2))            
     diff_dol = current - EOQ
     diff_per = current/EOQ * 100
     temp_list.append(diff_dol.round(decimals=2))
-    temp_list.append(diff_per.round(decimals=2))
-    #print("this is the difference in dollars: " + str(diff_dol.round(decimals=2)))
-    #print("this is the difference in percentage: " + str(diff_per.round(decimals=2)) + "%")
+    temp_list.append(diff_per.round(decimals=2))        
     list_results.append(temp_list)
-print(list_results)
 
 
 df2 = pd.DataFrame(list_results)

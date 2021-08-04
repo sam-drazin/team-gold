@@ -26,7 +26,8 @@ def run_create_and_import():
     #     db='HF_13f_filings')
     # c = db.cursor()
 
-    Your_Table_Name = "insert name here"
+    #THIS IS WHAT WE CHOSE OUR TABLE NAME TO BE:
+    Your_Table_Name = "All_Holdings_Raw_Data"
     # CREATE TABLE
     sql = '''
     create table %s (
@@ -43,3 +44,4 @@ def run_create_and_import():
     # Choose how far back you want the data from, we chose 4 quarters worth.
     number_of_quarters = 4
     import_data.run_import(number_of_quarters)
+    return Your_Table_Name
