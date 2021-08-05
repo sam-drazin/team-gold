@@ -97,5 +97,6 @@ The following table contains the hedge funds that we used in the Stock Analysis 
     * Each stock's data is obtained by using the Pandas Datareader to pull the data from [Yahoo! Finance](finance.yahoo.com).
 9. The program will return a .xlsx file containing 2 tables: the first labeled each fund's top twenty-five holdings along with how much each fund owned, bought or sold, and an additional table containing the top twenty-five stocks based on their score and the percent error of each stock's prediction.
 10. The percent error indicates how close the model was to correctly predicting the stock - the closer to zero percent, the more accurate the prediction. If the percentage is positive, the stock outperformed the model's predictions and if it is negative, it underperformed predictions. 
+    * A significant error may indicate that the stock performance has deviated significantly from the fund manager's expectation and may suggest that the manager may have abandoned this position since the end of the quarter. This might discourage the user from considering purchasing a stock with a significant percent error. 
 
 ****
