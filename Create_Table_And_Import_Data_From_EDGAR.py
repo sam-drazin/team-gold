@@ -26,6 +26,8 @@ def run_create_and_import():
     #     db='HF_13f_filings')
     # c = db.cursor()
 
+    #Your_Table_Name = input("What is your table name? ")
+    print("For this demo, we're calling our table \'All_Holdings_Raw_Data\'")
     #THIS IS WHAT WE CHOSE OUR TABLE NAME TO BE:
     Your_Table_Name = "All_Holdings_Raw_Data"
     # CREATE TABLE
