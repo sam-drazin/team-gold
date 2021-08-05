@@ -1,6 +1,7 @@
 # PowerPoint Presentation
 Link to PowerPoint presentation describing the project:
 https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p
+It can also be downloaded as a .pptx file from [here](https://github.com/davidlifschitz/team-gold/blob/main/Stock%20Analysis%20Presentation.pptx)
 
 # Team Gold Stock Analysis Tool
 Our team (consisting of [Judah Levy](https://github.com/JudahILevy), [David Lifschitz](https://github.com/davidlifschitz), [Sam Drazin](https://github.com/sam-drazin), and [Yaakov Bienstock](https://github.com/yaakovbienstock) under the guidance of [Dr. Aliza Heching](https://www.linkedin.com/in/aliza-heching-5206116)) built a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project required the gathering, cleaning, and combining of data from the data sources.  The consolidated data is then analyzed to provide the end user with insight to support stock selection decision-making. The tool is designed so that data and analysis can be easily updated by the end user as data refreshes become available.
@@ -24,6 +25,7 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 4. (Optional) Connect to the database in MySQL workbench (see steps listed below).
 5. Create an account at [SEC-API](https://sec-api.io/) to obtain an API Key.
 6. Input the relevant database information and query API where listed below and run the program using python3.
+    * Follow the instructions displayed in the command line.
 7. View the files that have been created in your working directory.
 
 # Prerequisites 
@@ -73,6 +75,7 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 5. Enter your port number (3306) under "Port".<br />
 6. Enter your database "Master username" under "username" and your database "Master password" after clicking on "Password".<br />
 7. Click "OK".<br />
+8. This provides a view of the tables in the database, it is not needed for any functional aspect of the program.
 
 # 5. Create an SEC-API Account
 1. Go to https://sec-api.io/<br />
@@ -94,7 +97,7 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 7. The program will then loop through the top twenty-five stocks, in order of their ranking mentioned above and run a Long-Short-Term-Memory (LSTM) prediction on each one. The code used for this prediction is based on the tutorial found [here](https://www.datasciencecentral.com/profiles/blogs/stock-price-prediction-using-lstm-long-short-term-memory). 
 8. The LSTM model analyzes the patterns in each stock's daily close price from January 1, 2018 until the end of the most recent quarter for which data is available. This provides a possibility to have an outlook into a fund's possible thinking when they held each position at the end of the quarter. Additionally, it allows the user to verify if the stock has performed up to the model's expectations from the end of the quarter until the day on which the program is being run. <br />
     * Each stock's data is obtained by using the Pandas Datareader to pull the data from [Yahoo! Finance](finance.yahoo.com).
-9. The program will return a .xlsx file containing 2 tables: the first labeled each fund's top twenty-five holdings as well as an additional .csv file containing the top twenty-five stocks based on their score and the percent error of each stock's prediction.
+9. The program will return a .xlsx file containing 2 tables: the first labeled each fund's top twenty-five holdings along with how much each fund owned, bought or sold, and an additional table containing the top twenty-five stocks based on their score and the percent error of each stock's prediction.
 10. The percent error indicates how close the model was to correctly predicting the stock - the closer to zero percent, the more accurate the prediction. If the percentage is positive, the stock outperformed the model's predictions and if it is negative, it underperformed predictions. 
 
 ****
