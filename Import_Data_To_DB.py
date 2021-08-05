@@ -19,14 +19,6 @@ def run_import(number_of_quarters):
     )
     c = db.cursor()
 
-    #OUR WORKING DB
-    # db = pymysql.connect(
-    #     host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
-    #     user='admin',
-    #     password='12345678',
-    #     db='HF_13f_filings')
-    # c = db.cursor()
-
     #ENTER YOUR OWN QUERY API
     queryApi = QueryApi(api_key="Your API Key that can be obtained from the sec-api site") 
     

@@ -18,33 +18,14 @@ def run_demo():
     yes = input()
 
     # CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
-    # db = pymysql.connect(
-    #   host = 'your database hosting site',
-    #   user = 'your username',
-    #   password = 'your password',
-    #   db = 'Name of the database you are connecting to'
-    # )
-    # c = db.cursor()
-    host='your database hosting site'
-    user= 'your username'
-    password= 'your password'
-    db= 'Name of the database you are connecting to'
-
-
-    #THIS WAS OUR DATABASE INFORMATION
-    host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com'
-    user='admin'
-    password='12345678'
-    db= 'HF_13f_filings'
-
-    # OUR WORKING DB
     db = pymysql.connect(
-      host=host,
-      user=user, 
-      password=password,
-      db=db
+      host = 'your database hosting site',
+      user = 'your username',
+      password = 'your password',
+      db = 'Name of the database you are connecting to'
     )
     c = db.cursor()
+    
 
     Your_Table_Name = ""
     print("Have you created the table yet? If not, type NO and press Enter.")
