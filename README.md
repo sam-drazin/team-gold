@@ -96,3 +96,6 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 12. The percent error indicates how close the model was to correctly predicting the stock - the closer to zero percent, the more accurate the prediction. If the percentage is positive, the stock outperformed the model's predictions and if it is negative, it underperformed predictions. 
 
 ****
+
+Link to PowerPoint presentation describing the project:
+https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p
