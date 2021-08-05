@@ -1,35 +1,17 @@
 # Team Gold Stock Analysis Tool
-Students will build a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project will require students to gather, clean, and combine data from the data sources.  The consolidated data will then be analyzed to provide the end user with insight to support stock selection decision-making. The tool should be designed so that data and analysis can be easily updated by the end user as data refreshes become available.
+Our team (consisting of [Judah Levy](https://github.com/JudahILevy), [David Lifschitz](https://github.com/davidlifschitz), [Sam Drazin](https://github.com/sam-drazin), and [Yaakov Bienstock](https://github.com/yaakovbienstock) under the guidance of [Aliza Heching](https://www.linkedin.com/in/aliza-heching-5206116)) built a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project will require students to gather, clean, and combine data from the data sources.  The consolidated data will then be analyzed to provide the end user with insight to support stock selection decision-making. The tool should be designed so that data and analysis can be easily updated by the end user as data refreshes become available.
 
 # Summary
 SEC-API is used to pull hedge fund 13F filings from a list of hedge funds. The data is entered into a MySQL database. After the data is cleaned and analyzed, the hedge funds' top holdings are extracted. Before returning these holdings to the user, each stock will be run through a Long-Short-Term-Memory (LSTM) stock predictor to assess whether the stock has met performance expectations since the end of the quarter, since 13F forms are filed quarterly, up to 45 days after the end of the quarter. <br />
-These are the hedge funds that are used in the Stock Analysis Tool:
-* Bridger Capital, L.L.C.
-* Bridgewater Associates, L.P.
-* Citadel, L.L.C.
-* Coatue Management, L.P.
-* D. E. Shaw & Co., L.P. 
-* Discovery Capital Management, L.L.C.
-* ExodusPoint Capital Management, L.P.
-* HealthCor Management, L.P.
-* Impala Asset Management, L.L.C.
-* Intrepid Capital, L.P.
-* Joho Capital, L.L.C.
-* Light Street Capital, L.L.C.
-* Lone Pine Capital, L.L.C.
-* Marshall Wace, L.L.P.
-* Matrix Capital Management, L.P.
-* Maverick Capital, Ltd.
-* Millburn Ridgefield Corp.
-* Millennium Management, LLC
-* Point72 Asset Management, L.P.
-* Schonfeld Strategic Advisors, L.L.C.
-* Second Curve Capital, L.L.C.
-* Soros Fund Management, L.L.C.
-* Sun Valley Gold, L.L.C.
-* Third Point Management, L.L.C.
-* Tiger Global Management, L.L.C.
-* Toscafund Asset Management, L.L.P.
+The following table contains the hedge funds that we used in the Stock Analysis Tool: <br />
+|   |   |   |   |   |
+|---|---|---|---|---|
+|Bridger Capital, L.L.C.|Bridgewater Associates, L.P.|Citadel, L.L.C.|Coatue Management, L.P.|D. E. Shaw & Co., L.P. |
+|Discovery Capital Management, L.L.C.|ExodusPoint Capital Management, L.P.|HealthCor Management, L.P.|Impala Asset Management, L.L.C.|Intrepid Capital, L.P.|
+|Joho Capital, L.L.C.|Light Street Capital, L.L.C.|Lone Pine Capital, L.L.C.|Marshall Wace, L.L.P.|Matrix Capital Management, L.P.|
+|Maverick Capital, Ltd.|Millburn Ridgefield Corp.|Millennium Management, LLC|Point72 Asset Management, L.P.|Schonfeld Strategic Advisors, L.L.C.|
+|Second Curve Capital, L.L.C.|Soros Fund Management, L.L.C.|Sun Valley Gold, L.L.C.|Third Point Management, L.L.C.|Tiger Global Management, L.L.C.|
+|Toscafund Asset Management, L.L.P.|
 
 # Steps to Use the Stock Analysis Tool
 1. Clone this repository to your machine using the command ```git clone https://github.com/davidlifschitz/team-gold.git```
@@ -91,11 +73,11 @@ These are the hedge funds that are used in the Stock Analysis Tool:
 # 5. Create an SEC-API Account
 1. Go to https://sec-api.io/<br />
 2. Click "Get Free API Key" and create an account.<br />
-3. Save your API key.<br />
+3. Save your API key for later use.<br />
 
 # 6. Running the Stock Analysis Tool
 1. Before any stocks can be recommended, the database must be built.<br /> In **auto_run.py**, **demo_run.py**, **Create_Table_And_Import_Data_From_EDGAR.py**, and **Import_Data_To_DB.py**: <br /> enter your hostname (also known as endpoint), username, password and database name as indicated in the program. Make sure they are all entered as strings (they should be in quotation marks). 
-2. Additionally, enter your QueryAPI in Import_Data_To_DB. <br /> '''queryApi = QueryApi(api_key="Your API Key that can be obtained from the sec-api site")'''<br /> This will allow the program to query EDGAR's database and download the 13F filings. 
+2. Additionally, enter your QueryAPI in Import_Data_To_DB. <br /> ```queryApi = QueryApi(api_key="Your API Key that can be obtained from the sec-api site")```<br /> This will allow the program to query EDGAR's database and download the 13F filings. 
 3. Finally, in **Create_Table_And_Import_Data_From_EDGAR.py**, enter the desired name for the created table, where indicated. 
     * Make sure each of these are copied exactly and contain no extra spaces or other characters, as any error will prevent the program from connecting to the database.<br />
 4. Once this is done, simply run Stock_Analysis_Tool.py from your command line using python3. It will prompt you to choose whether you're running the demo or automative script.
