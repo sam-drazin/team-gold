@@ -10,12 +10,20 @@ def run_create_and_import():
     import Import_Data_To_DB as import_data
 
     # CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
+    # db = pymysql.connect(
+    #   host = 'your database hosting site',
+    #   user = 'your username',
+    #   password = 'your password',
+    #   db = 'Name of the database you are connecting to'
+    # )
+    # c = db.cursor()
+
+    #OUR WORKING DB
     db = pymysql.connect(
-      host = 'your database hosting site',
-      user = 'your username',
-      password = 'your password',
-      db = 'Name of the database you are connecting to'
-    )
+        host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
+        user='admin',
+        password='12345678',
+        db='HF_13f_filings')
     c = db.cursor()
 
 
