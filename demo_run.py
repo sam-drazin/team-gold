@@ -58,7 +58,7 @@ def run_demo():
     else:
         Your_Table_Name = "All_Holdings_Raw_Data"    
 
-
+    print("Table has been created and populated.")
 
     #Find the date of the last available filing.
     #@param date is the date on which the code is being run
