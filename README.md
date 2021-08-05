@@ -97,5 +97,6 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 
 ****
 
+# PowerPoint Presentation
 Link to PowerPoint presentation describing the project:
 https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p
