@@ -74,6 +74,7 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 1. Go to https://sec-api.io/<br />
 2. Click "Get Free API Key" and create an account.<br />
 3. Save your API key for later use.<br />
+4. **NOTE** The Free Version of this API key has a capacity of 100 queries. After that a new API key is required.
 
 # 6. Running the Stock Analysis Tool
 1. Before any stocks can be recommended, the database must be built.<br /> In **auto_run.py**, **demo_run.py**, **Create_Table_And_Import_Data_From_EDGAR.py**, and **Import_Data_To_DB.py**: <br /> enter your hostname (also known as endpoint), username, password and database name as indicated in the program. Make sure they are all entered as strings (they should be in quotation marks). 
