@@ -218,7 +218,7 @@ def run_demo():
         stock_dict[stocks[i]] /= 27
     stock_dict = dict(sorted(stock_dict.items(), key=operator.itemgetter(1),reverse=True))
     stocks = list(stock_dict)
-    for i in range(1,3):
+    for i in range(1,26):
         best_stocks.append(stocks[i])
 
     return_list = []
