@@ -1,3 +1,7 @@
+# PowerPoint Presentation
+Link to PowerPoint presentation describing the project:
+https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p
+
 # Team Gold Stock Analysis Tool
 Our team (consisting of [Judah Levy](https://github.com/JudahILevy), [David Lifschitz](https://github.com/davidlifschitz), [Sam Drazin](https://github.com/sam-drazin), and [Yaakov Bienstock](https://github.com/yaakovbienstock) under the guidance of [Aliza Heching](https://www.linkedin.com/in/aliza-heching-5206116)) built a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project required the gathering, cleaning, and combining of data from the data sources.  The consolidated data is then analyzed to provide the end user with insight to support stock selection decision-making. The tool is designed so that data and analysis can be easily updated by the end user as data refreshes become available.
 
@@ -96,7 +100,3 @@ The following table contains the hedge funds that we used in the Stock Analysis 
 12. The percent error indicates how close the model was to correctly predicting the stock - the closer to zero percent, the more accurate the prediction. If the percentage is positive, the stock outperformed the model's predictions and if it is negative, it underperformed predictions. 
 
 ****
-
-# PowerPoint Presentation
-Link to PowerPoint presentation describing the project:
-https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p
