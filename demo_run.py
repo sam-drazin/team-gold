@@ -344,7 +344,7 @@ def run_demo():
         ## mse= mean squared error
         model.compile(optimizer='adam', loss='mse')
 
-        ## Fiting model with given training dataset
+        # ## Fiting model with given training dataset
         history_data = model.fit(Xtrain, Ytrain, batch_size=50, epochs=50, verbose=2, validation_split=0.2)
 
         ##Create testing dataset, new array which contains scaled value from 2275 out of 2843
