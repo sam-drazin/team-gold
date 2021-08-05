@@ -10,25 +10,18 @@ def run_import(number_of_quarters):
     # IMPORTS FOR SQL DB CONNECTION
     import pymysql
 
-    # CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
-    # db = pymysql.connect(
-    #   host = 'your database hosting site',
-    #   user = 'your username',
-    #   password = 'your password',
-    #   db = 'Name of the database you are connecting to'
-    # )
-    # c = db.cursor()
-
-    #OUR WORKING DB
+    CHANGE FIELDS TO YOUR OWN PERSONAL FIELDS
     db = pymysql.connect(
-        host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
-        user='admin',
-        password='12345678',
-        db='HF_13f_filings')
+      host = 'your database hosting site',
+      user = 'your username',
+      password = 'your password',
+      db = 'Name of the database you are connecting to'
+    )
     c = db.cursor()
 
+
     #ENTER YOUR OWN QUERY API
-    queryApi = QueryApi(api_key="2cbca106dd8006615cc5360d3752653aca521d4ba07b3f4b3316961b93eab3d2") 
+    queryApi = QueryApi(api_key="Copy your query API here") 
     
     cik = [
         "1401388",
