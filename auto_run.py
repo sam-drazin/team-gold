@@ -44,24 +44,15 @@ def run_auto():
     #   db = 'Name of the database you are connecting to'
     # )
     # c = db.cursor()
-    host='your database hosting site'
-    user= 'your username'
-    password= 'your password'
-    db= 'Name of the database you are connecting to'
 
 
-    #THIS WAS OUR DATABASE INFORMATION
-    host=str('hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com')
-    user=str('admin')
-    password=str('12345678')
-    db= str('HF_13f_filings')
 
     # OUR WORKING DB
     db = pymysql.connect(
-    host=host,
-    user=user, 
-    password=password,
-    db=db
+    host='hedge-fund-13f-filings.cuqh3juyttmr.us-east-1.rds.amazonaws.com',
+    user='admin', 
+    password='12345678',
+    db='HF_13f_filings'
     )
     c = db.cursor()
 
