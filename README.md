@@ -1,3 +1,5 @@
+# YouTube 
+[Link](https://youtu.be/oSInvrUjFfg) to our YouTube video.
 # PowerPoint Presentation
 [Link](https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p) to PowerPoint presentation describing the project.
 [Link](https://www.slideshare.net/DavidLifschitz3/team-gold-stock-analysis-presentation) to SlideShare presentation.
