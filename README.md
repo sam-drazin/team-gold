@@ -1,5 +1,6 @@
 # PowerPoint Presentation
 [Link](https://docs.google.com/presentation/d/1XvxwJrdQnB-fSfQAgwcC0NkjI0BrYA3aqvmDVZjwYYI/edit#slide=id.p) to PowerPoint presentation describing the project.
+[Link](https://www.slideshare.net/DavidLifschitz3/team-gold-stock-analysis-presentation) to SlideShare presentation.
 
 # Team Gold Stock Analysis Tool
 Our team (consisting of [Judah Levy](https://github.com/JudahILevy), [David Lifschitz](https://github.com/davidlifschitz), [Sam Drazin](https://github.com/sam-drazin), and [Yaakov Bienstock](https://github.com/yaakovbienstock) under the guidance of [Dr. Aliza Heching](https://www.linkedin.com/in/aliza-heching-5206116)) built a tool for stock analysis and selection using publicly available data sets such as 13F filings, Yahoo Finance, and SEC filings. The project required the gathering, cleaning, and combining of data from the data sources.  The consolidated data is then analyzed to provide the end user with insight to support stock selection decision-making. The tool is designed so that data and analysis can be easily updated by the end user as data refreshes become available.
